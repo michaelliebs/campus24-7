@@ -1,7 +1,10 @@
 type EventItemProps = {
   title: string,
-  posted_by: string,
   description: string,
+  date: string,
+  time: string,
+  location: string,
+  posted_by: string,
   num_attending: number,
   num_interested: number,
   num_comments: number
@@ -20,8 +23,11 @@ const RandomEventItemProps = () => {
   }
   return {
     title,
-    posted_by: words[Math.floor(Math.random() * words.length)],    
     description: "Ipsam non nesciunt cum dolore id. Ut id cum ab quidem ad et eius illum. Nemo eligendi qui modi ut magnam commodi.Fuga molestiae nemo aut. Quia molestiae laudantium esse magni voluptatum odit. Omnis blanditiis suscipit repellendus qui aut sit quas voluptatem. Sequi maiores sed ut quaerat consequatur.",
+    date: "1/11/11",
+    time: "3:00pm",
+    location: "Melville Library",
+    posted_by: words[Math.floor(Math.random() * words.length)],    
     num_attending: Math.floor(Math.random() * 600),
     num_interested: Math.floor(Math.random() * 600),
     num_comments: Math.floor(Math.random() * 20),
@@ -29,20 +35,35 @@ const RandomEventItemProps = () => {
   }
 }
 
+
 const EventItem = ({
   title,
-  posted_by,
   description,
+  date,
+  time,
+  location,
+  posted_by,
   num_attending,
   num_interested,
   num_comments,
   tags
 }: EventItemProps) => {
-  console.log(title)
+  console.log(date,time, location)
   return (<div className="event">
-    <h2>{title}</h2>
-    <p className="meta">Posted by <strong>{posted_by}</strong></p>
-    <p>{description}</p>
+    <div className="title-author" style={{display: "flex"}}>
+      <h2 style={{display: "inline", margin: 0}}>{title}</h2>
+      <span style={{flex: 1}}> </span>
+      <span className="meta">Posted by <strong>{posted_by}</strong></span>
+    </div>
+    
+    <div className="time-date-location-row">
+      <span>{time}, </span>
+      <span>{date} </span>
+      •
+      <span> {location}</span>
+    </div>
+    {/* <p className="meta">Posted by <strong>{posted_by}</strong></p> */}
+    <p style={{margin: "10px 0"}}>{description}</p>
     <div className="stats">
       <span>🎟️ {num_attending} going</span> |
       <span>👀 {num_interested} interested</span> |

@@ -86,7 +86,7 @@ aside h3 {
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
-  min-width: 40%;
+  min-width: 50%;
   flex: 1;
 }
 
@@ -104,6 +104,7 @@ aside h3 {
   font-size: 0.9em;
   color: #777;
   margin-bottom: 10px;
+  align-self: flex-end;
 }
 
 .stats {
