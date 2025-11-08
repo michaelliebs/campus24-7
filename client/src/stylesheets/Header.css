@@ -1,7 +1,7 @@
 #site-header {
   box-sizing: border-box;
   display: flex;
-  background-color: var(--primary);
+	background: linear-gradient(141deg, cyan 0%, rebeccapurple 40%, deeppink 90%);
   padding: 20px 0;
   /* justify-content: center; */
   position: fixed;
@@ -60,3 +60,5 @@
 .dropdown button:hover {
   background-color: #f0f0f0;
 }
+
+

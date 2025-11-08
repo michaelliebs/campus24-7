@@ -4,15 +4,10 @@ import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import '../../stylesheets/Header.css';
 
-// type HeaderProps = {
-//   links: typeof Link[]
-// };
-
 export default function Header() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
-
   const handleLogout = async () => {
     try {
       await logout();
