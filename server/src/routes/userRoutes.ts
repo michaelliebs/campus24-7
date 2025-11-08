@@ -39,7 +39,12 @@ function setAuthCookie(res: Response, token: string) {
 }
 
 function clearAuthCookie(res: Response) {
-  res.clearCookie("token", { path: "/" });
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: isProd,
+    sameSite: isProd ? "none" : "lax",
+    path: "/",
+  });
 }
 
 router.get("/", getUsers);

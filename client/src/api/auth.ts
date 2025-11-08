@@ -16,3 +16,10 @@ export const login = async (loginData: IUserLogin) => {
   });
   return res.data;
 };
+
+export const logout = async () => {
+  const res = await axios.post(`${API_URL}/users/logout`, {}, {
+    withCredentials: true,
+  });
+  return res.data;
+};
