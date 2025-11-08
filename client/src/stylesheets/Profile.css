@@ -1,0 +1,165 @@
+.profile-container {
+  max-width: 900px;
+  margin: calc(var(--header-height) + 2rem) auto 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-container h1 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: #333;
+  text-align: center;
+}
+
+.profile-container h2 {
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  color: #444;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 0.3rem;
+}
+
+.profile-container p {
+  font-size: 1rem;
+  color: #555;
+  margin: 0.5rem 0;
+}
+
+.profile-container strong {
+  color: #222;
+}
+
+.profile-container label {
+  display: block;
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.profile-container input,
+.profile-container textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin-top: 4px;
+  margin-bottom: 1rem;
+  font-size: 1rem;
+  transition: border 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.profile-container input:focus,
+.profile-container textarea:focus {
+  outline: none;
+  border-color: #4f46e5; /* Indigo */
+  box-shadow: 0 0 0 2px rgba(79,70,229,0.2);
+}
+
+button {
+  padding: 10px 16px;
+  margin-right: 10px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Specific buttons */
+button.edit-btn {
+  background-color: #4f46e5;
+  color: white;
+}
+
+button.edit-btn:hover {
+  background-color: #4338ca;
+}
+
+button.save-btn {
+  background-color: #10b981; /* Emerald green */
+  color: white;
+}
+
+button.save-btn:hover {
+  background-color: #059669;
+}
+
+button.delete-btn {
+  background-color: #ef4444; /* Red */
+  color: white;
+}
+
+button.delete-btn:hover {
+  background-color: #dc2626;
+}
+
+/* Event list */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul li {
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fafafa;
+  transition: box-shadow 0.2s ease;
+}
+
+ul li:hover {
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Status color dots (optional visual improvement) */
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 6px;
+}
+
+.events-section {
+  margin-top: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 1rem;
+    margin: calc(var(--header-height) + 1rem) 1rem 1rem 1rem;
+  }
+
+  ul li {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  button {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+}
