@@ -9,7 +9,7 @@ const router = Router();
 router.get("/", getEvents);
 
 router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
-  const { title, description, date, time, location, email, phone } = req.body;
+  const { title, description, date, time, location, host, email, phone, status, tags } = req.body;
   if (!title || !description || !date || !time || !location) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -33,9 +33,12 @@ router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
       time,
       location,
       host: req.user!.userId,
+      attendees: [req.user!.userId],
+      interested: [],
+      comments: [],
       phone,
       email,
-      attendees: [req.user!.userId],
+      tags,
     });
 
     return res.status(201).json({ message: "Event successfully created", event: newEvent });
