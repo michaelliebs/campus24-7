@@ -8,6 +8,9 @@ export interface IUser extends Document {
   major: string;
   status: string;
   isAdmin: Boolean;
+  comments: mongoose.Types.ObjectId[]; // references to comments made by the user
+  eventsHosted: mongoose.Types.ObjectId[]; // references to events hosted by the user
+  eventsAttending: mongoose.Types.ObjectId[]; // references to events the user is attending
 }
 
 const userSchema = new Schema<IUser>(
@@ -19,6 +22,9 @@ const userSchema = new Schema<IUser>(
     major: { type: String },
     status: { type: String },
     isAdmin: { type: Boolean },
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    eventsHosted: [{ type: Schema.Types.ObjectId, ref: "Event" }],
+    eventsAttending: [{ type: Schema.Types.ObjectId, ref: "Event" }],
   },
   { timestamps: true }
 );
