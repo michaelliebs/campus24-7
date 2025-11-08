@@ -28,7 +28,7 @@ export default function Header() {
         </div>
       </section>
 
-      <search>
+      <search id='search-bar'>
         <input placeholder="Search Events" />
       </search>
 
