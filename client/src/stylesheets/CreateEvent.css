@@ -1,3 +1,10 @@
 main#create-event {
   margin-top: var(--header-height);
+  max-width: 900px;
+  margin: calc(var(--header-height) + 20px) auto 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
