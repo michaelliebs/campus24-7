@@ -2,6 +2,7 @@ import { useState } from "react";
 import { signup } from "../api/auth";
 import type { IUserSignup } from "../types/user";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import "../stylesheets/SignUp.css";
 
 const Signup = () => {
@@ -17,6 +18,7 @@ const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -28,6 +30,7 @@ const Signup = () => {
     await signup(formData);
     setSuccess(true);
     setError(null);
+    navigate("/home", { replace: true });
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       setError(err.response?.data?.message || "Signup failed");
@@ -40,71 +43,36 @@ const Signup = () => {
   }
 };
 
-
-  return (
-    <div className="signup-container">
+   return (
+    <div className="auth-container">
       <h2>Sign Up</h2>
-      {success && <p style={{ color: "green" }}>Account created successfully!</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p className="success">Account created successfully!</p>}
+      {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="signup-form">
-        <input
-          type="text"
-          name="name"
-          placeholder="Full Name"
-          value={formData.name}
-          onChange={handleChange}
-          required
-        />
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input type="text" name="name" placeholder="Full Name" value={formData.name} onChange={handleChange} required />
+        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
+        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
 
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={formData.email}
-          onChange={handleChange}
-          required
-        />
-
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={formData.password}
-          onChange={handleChange}
-          required
-        />
-
-        <select
-          name="status"
-          value={formData.status}
-          onChange={handleChange}
-          required
-        >
+        <select name="status" value={formData.status} onChange={handleChange} required>
           <option value="">Select Status</option>
           <option value="undergraduate">Undergraduate</option>
           <option value="graduate">Graduate</option>
           <option value="alumni">Alumni</option>
         </select>
 
-        <input
-          type="text"
-          name="major"
-          placeholder="Major"
-          value={formData.major}
-          onChange={handleChange}
-        />
-
-        <textarea
-          name="bio"
-          placeholder="Short Bio"
-          value={formData.bio}
-          onChange={handleChange}
-          rows={4}
-        />
+        <input type="text" name="major" placeholder="Major" value={formData.major} onChange={handleChange} />
+        <textarea name="bio" placeholder="Short Bio" value={formData.bio} onChange={handleChange} rows={4} />
 
         <button type="submit">Sign Up</button>
       </form>
+
+      <p className="switch-auth">
+        Already have an account?{" "}
+        <Link to="/login" className="auth-link">
+          Log in here
+        </Link>
+      </p>
     </div>
   );
 };

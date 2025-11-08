@@ -1,23 +1,44 @@
 import './App.css'
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'; 
+import { BrowserRouter, Routes, Route } from 'react-router-dom'; 
 import Header from './components/Header';
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import HomePage from './pages/HomePage';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
+    <AuthProvider>
+      <BrowserRouter>
+        <Header />
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/account" element={<Account />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="*" element={<p>Page not found</p>} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<SignUp />} />
+          
+          {/* Protected route */}
+          <Route
+            path="/home"
+            element={
+              <ProtectedRoute>
+                <HomePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/account"
+            element={
+              <ProtectedRoute>
+                <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<p>Page not found. Go to <a href="/home">Home</a></p>} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

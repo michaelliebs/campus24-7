@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import User, { IUser } from "../models/Users";
 import { getUsers } from "../controllers/userController";
 import { Document } from 'mongoose';
+import { requireAuth } from '../middleware/authMiddleware';
 
 const router = Router();
 
@@ -42,6 +43,18 @@ function clearAuthCookie(res: Response) {
 }
 
 router.get("/", getUsers);
+
+router.get("/me", requireAuth, async (req: Request, res: Response) => {
+  const authReq = req as any; // cast to include user
+  try {
+    const user = await User.findById(authReq.user.userId).select("-password");
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    res.json({ user });
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
 router.post('/signup', async (req: Request, res: Response) => {
   const { name, email, password, bio, major, status } = req.body;

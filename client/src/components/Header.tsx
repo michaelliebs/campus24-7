@@ -10,7 +10,7 @@ export default function Header() {
   return (
     <header id='site-header'>
       <div className="link-wrapper">
-        <Link to="/">Home</Link>
+        <Link to="/home">Home</Link>
       </div>
       <div className="link-wrapper">
         <Link to="/account">Account</Link>
