@@ -1,14 +1,14 @@
 import axios from "axios";
 import type { IUserLogin, IUserSignup } from "../types/user";
 
-const API_URL = "http://localhost:5000/api/users"; // adjust if different
+const API_URL = import.meta.env.API_URL || "http://localhost:5000/api";
 
 export const signup = async (userData: IUserSignup) => {
-  const res = await axios.post(`${API_URL}/signup`, userData);
+  const res = await axios.post(`${API_URL}/users/signup`, userData);
   return res.data;
 };
 
 export const login = async (loginData: IUserLogin) => {
-  const res = await axios.post(`${API_URL}/login`, loginData);
+  const res = await axios.post(`${API_URL}/users/login`, loginData);
   return res.data;
 };
