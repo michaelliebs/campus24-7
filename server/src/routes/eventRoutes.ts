@@ -48,19 +48,35 @@ router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
   }
 });
 
-router.put('/edit/:id', requireAuth, async (req:AuthRequest, res: Response) => {
+router.put('/edit/:id', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
-  const { id } = req.params;
-  const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true });
+    const { id } = req.params;
+    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true });
 
-  if (!updatedEvent) {
-    return res.status(404).json({ error: "Event not fount" });
-  }
+    if (!updatedEvent) {
+      return res.status(404).json({ error: "Event not found" });
+    }
 
-  res.status(200).json({ message: "Event successfully updated", event: updatedEvent });
+    res.status(200).json({ message: "Event successfully updated", event: updatedEvent });
   } catch (err) {
     console.error("Error updating event:", err);
     res.status(500).json({ error: "Failed to update event" });
+  }
+});
+
+router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const { id } = req.params;
+    const deletedEvent = await Event.findByIdAndDelete(id);
+
+    if (!deletedEvent) {
+      return res.status(404).json({ error: "Event not found" });
+    }
+
+    res.status(200).json({ message: "Event successfully deleted", event: deletedEvent });
+  } catch(err) {
+    console.error("Error deleting event:", err);
+    res.status(500).json({ error: "Failed to delete event" });
   }
 });
 
