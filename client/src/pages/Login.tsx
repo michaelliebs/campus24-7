@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { login } from "../api/auth";
 import type { IUserLogin } from "../types/user";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../stylesheets/Login.css";
 
 const Login = () => {
@@ -11,6 +12,9 @@ const Login = () => {
   });
 
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
+
+  const { login } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -19,11 +23,13 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const data = await login(formData);
+    const data = await login(formData.email, formData.password);
     console.log("Logged in user:", data);
     setError(null);
-    // Save token to localStorage or context
-    localStorage.setItem("token", data.token);
+
+    navigate("/home", { replace: true });
+
+
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       setError(err.response?.data?.message || "Login failed");
@@ -36,39 +42,36 @@ const Login = () => {
 };
 
   return (
-    <div className="login-container">
+    <div className="auth-container">
       <h2>Login</h2>
-      {error && <p className="login-message">{error}</p>}
+      {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="login-form">
-        <div>
-          <label htmlFor="email">Email</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="example@email.com"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
-        <div>
-          <label htmlFor="password">Password</label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
-        </div>
-
+      <form onSubmit={handleSubmit} className="auth-form">
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Login</button>
       </form>
+
+      <p className="switch-auth">
+        Don’t have an account?{" "}
+        <Link to="/signup" className="auth-link">
+          Sign up here
+        </Link>
+      </p>
     </div>
   );
 };

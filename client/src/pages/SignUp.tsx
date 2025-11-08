@@ -1,11 +1,10 @@
 import { useState } from "react";
-import { signup } from "../api/auth";
-import type { IUserSignup } from "../types/user";
-import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../stylesheets/SignUp.css";
+import type { IUserSignup } from "../types/user";
 
 const Signup = () => {
-  
   const [formData, setFormData] = useState<IUserSignup>({
     name: "",
     email: "",
@@ -17,37 +16,45 @@ const Signup = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const { signup } = useAuth();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    await signup(formData);
-    setSuccess(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError(null);
-  } catch (err: unknown) {
-    if (axios.isAxiosError(err)) {
-      setError(err.response?.data?.message || "Signup failed");
-    } else if (err instanceof Error) {
-      setError(err.message);
-    } else {
-      setError("Signup failed");
-    }
-    setSuccess(false);
-  }
-};
 
+    try {
+      // Use context signup
+      await signup(formData);
+      setSuccess(true);
+      navigate("/home", { replace: true });
+    } catch (err: any) {
+      console.error(err);
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Signup failed");
+      }
+      setSuccess(false);
+    }
+  };
 
   return (
-    <div className="signup-container">
+    <div className="auth-container">
       <h2>Sign Up</h2>
-      {success && <p style={{ color: "green" }}>Account created successfully!</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {success && <p className="success">Account created successfully!</p>}
+      {error && <p className="error">{error}</p>}
 
-      <form onSubmit={handleSubmit} className="signup-form">
+      <form onSubmit={handleSubmit} className="auth-form">
         <input
           type="text"
           name="name"
@@ -105,6 +112,13 @@ const Signup = () => {
 
         <button type="submit">Sign Up</button>
       </form>
+
+      <p className="switch-auth">
+        Already have an account?{" "}
+        <Link to="/login" className="auth-link">
+          Log in here
+        </Link>
+      </p>
     </div>
   );
 };
