@@ -7,7 +7,7 @@ const router = Router();
 
 router.get("/", getUsers);
 
-router.post('/register', async (req: Request, res: Response) => {
+router.post('/signup', async (req: Request, res: Response) => {
   console.log("POST /api/users/register hit", req.body);
   const { name, email, password, bio, major, status } = req.body;
   if (!name || !email || !password) {
