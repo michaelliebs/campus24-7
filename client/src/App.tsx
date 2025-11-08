@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Header />
 
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<HomePage />} />
         <Route path="/account" element={<Account />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
@@ -21,13 +22,6 @@ function App() {
       </Routes>
     </BrowserRouter>
   )
-}
-
-function Home() {
-  return (
-    <>
-    </>
-  );
 }
 
 function Account() {

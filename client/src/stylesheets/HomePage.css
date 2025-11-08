@@ -1,0 +1,144 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f6fa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+header {
+  background: #2c3e50;
+  color: white;
+  text-align: center;
+  padding: 20px;
+}
+
+main#home-page {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  height: 100%;
+  margin: 0;
+  padding: 20px 0 0 20px;
+}
+
+/* Sidebar */
+aside#filter-events {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 300px;
+  height: fit-content;
+}
+
+aside h3 {
+  margin-top: 0;
+  color: #34495e;
+}
+
+.filter-group {
+  margin-bottom: 20px;
+}
+
+.filter-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+.filter-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.filter-group button {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  font-size: 1em;
+  margin-top: 10px;
+}
+
+/* Events Section */
+.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 20px;
+  gap: 20px;
+  align-items: start;
+  height: 0;
+}
+
+.event {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.event h2 {
+  margin: 0 0 8px;
+  color: #34495e;
+}
+
+.meta {
+  font-size: 0.9em;
+  color: #777;
+  margin-bottom: 10px;
+}
+
+.stats {
+  font-size: 0.9em;
+  margin-top: 10px;
+  color: #555;
+}
+
+.tags {
+  margin-top: 10px;
+}
+
+.tag {
+  display: inline-block;
+  background: #3498db;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-right: 6px;
+  margin-bottom: 5px;
+  font-size: 0.85em;
+}
+
+@media (max-width: 900px) {
+  main {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  aside {
+    width: 100%;
+    order: -1;
+  }
+
+  .container {
+    justify-content: center;
+  }
+
+  .event {
+    width: 90%;
+    max-width: 500px;
+  }
+}
