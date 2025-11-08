@@ -5,6 +5,7 @@ import axios from "axios";
 import "../stylesheets/SignUp.css";
 
 const Signup = () => {
+  
   const [formData, setFormData] = useState<IUserSignup>({
     name: "",
     email: "",
