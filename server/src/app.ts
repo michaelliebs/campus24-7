@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 import eventRoutes from "./routes/eventRoutes";
+import commentRoutes from "./routes/commentRoutes";
 
 const app = express();
 
@@ -23,5 +24,6 @@ connectDB();
 // Routes
 app.use("/api/users", userRoutes);
 app.use("/api/events", eventRoutes);
+app.use("/api/comments", commentRoutes);
 
 export default app;

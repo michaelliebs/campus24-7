@@ -1,8 +1,7 @@
-import { Router, Request, Response } from 'express';
-import Event, { IEvent } from "../models/Events";
+import { Router, Response } from 'express';
+import Event from "../models/Events";
 import { requireAuth, AuthRequest } from "../middleware/authMiddleware";
 import { getEvents } from "../controllers/eventController";
-import { Document } from 'mongoose';
 
 const router = Router();
 
