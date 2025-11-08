@@ -1,14 +1,20 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
 
-dotenv.config();
-
 const app = express();
-app.use(cors());
+
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
+app.use(cors({
+  origin: CLIENT_URL,
+  credentials: true,
+}));
+
 app.use(express.json());
+app.use(cookieParser());
 
 // Connect DB
 connectDB();
