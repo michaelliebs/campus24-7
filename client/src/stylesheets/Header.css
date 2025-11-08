@@ -62,10 +62,22 @@
   background-color: #f0f0f0;
 }
 
+
+.create-event-btn {
+  border-radius: 20px;
+  height: 30px;
+  padding: 4px 20px;
+  background-color: var(--secondary);
+  line-height: 20px;
+  align-items: center;
+  display: flex;
+  border: none;
+}
+
 .create-event-btn:hover {
-  background-color: #e0e0ff;
+  background-color: color-mix(in oklab, var(--secondary) 90%, black);
 }
 
 .create-event-btn:active {
-  background-color: #eef;
+  background-color: color-mix(in oklab, var(--secondary) 90%, white);
 }

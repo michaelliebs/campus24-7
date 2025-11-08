@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Profile from './pages/Profile';
+import { CreateEvent } from './pages/CreateEvent';
 
 function App() {
   return (
@@ -35,6 +36,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Account />
+              </ProtectedRoute>
+            }
+          />
+          <Route 
+            path='/create-event'
+            element={
+              <ProtectedRoute>
+                <CreateEvent />
               </ProtectedRoute>
             }
           />
