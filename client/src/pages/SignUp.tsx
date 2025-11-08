@@ -2,18 +2,22 @@ import { useState } from "react";
 import { signup } from "../api/auth";
 import type { IUserSignup } from "../types/user";
 import axios from "axios";
+import "../stylesheets/SignUp.css";
 
 const Signup = () => {
   const [formData, setFormData] = useState<IUserSignup>({
     name: "",
     email: "",
     password: "",
+    status: "",
+    major: "",
+    bio: "",
   });
 
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
@@ -37,11 +41,12 @@ const Signup = () => {
 
 
   return (
-    <div style={{ maxWidth: 400, margin: "2rem auto" }}>
+    <div className="signup-container">
       <h2>Sign Up</h2>
       {success && <p style={{ color: "green" }}>Account created successfully!</p>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
+
+      <form onSubmit={handleSubmit} className="signup-form">
         <input
           type="text"
           name="name"
@@ -50,6 +55,7 @@ const Signup = () => {
           onChange={handleChange}
           required
         />
+
         <input
           type="email"
           name="email"
@@ -58,6 +64,7 @@ const Signup = () => {
           onChange={handleChange}
           required
         />
+
         <input
           type="password"
           name="password"
@@ -66,6 +73,35 @@ const Signup = () => {
           onChange={handleChange}
           required
         />
+
+        <select
+          name="status"
+          value={formData.status}
+          onChange={handleChange}
+          required
+        >
+          <option value="">Select Status</option>
+          <option value="undergraduate">Undergraduate</option>
+          <option value="graduate">Graduate</option>
+          <option value="alumni">Alumni</option>
+        </select>
+
+        <input
+          type="text"
+          name="major"
+          placeholder="Major"
+          value={formData.major}
+          onChange={handleChange}
+        />
+
+        <textarea
+          name="bio"
+          placeholder="Short Bio"
+          value={formData.bio}
+          onChange={handleChange}
+          rows={4}
+        />
+
         <button type="submit">Sign Up</button>
       </form>
     </div>
