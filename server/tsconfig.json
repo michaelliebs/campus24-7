@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    // Output & Source Settings
+    "rootDir": "./src",            // Where TypeScript source files live
+    "outDir": "./dist",            // Where compiled JS will go
+    "sourceMap": true,             // Generate source maps for debugging
+    "declaration": true,           // Generate .d.ts files for TS definitions
+    "declarationMap": true,        
+
+    // Module & Target Settings
+    "module": "commonjs",          // Node.js backend typically uses commonjs
+    "target": "ES2020",            // Modern Node.js supports ES2020 features
+    "esModuleInterop": true,       // Allow default import from CommonJS modules
+    "moduleResolution": "node",    // Resolving modules like Node.js
+    "isolatedModules": true,       // Ensure each file can be transpiled independently
+
+    // Type Checking / Safety
+    "strict": true,                        // Enable all strict type checks
+    "noUncheckedIndexedAccess": true,      // Safer property access
+    "exactOptionalPropertyTypes": true,    // Optional properties checked precisely
+    "skipLibCheck": true,                  // Skip type checks on libraries for faster builds
+
+    // Node.js Types
+    "types": ["node"],                      // Include Node.js types for globals
+
+    // Additional Options
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}
