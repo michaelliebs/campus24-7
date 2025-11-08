@@ -8,12 +8,14 @@ export interface IEvent extends Document {
     location: string;
     host: Types.ObjectId; // reference to the user hosting the event
     attendees: Types.ObjectId[]; // list of users attending
+    interested: Types.ObjectId[]; // list of users interested
     comments: Types.ObjectId[]; // list of comments on the event
     email: string;
     phone: string;
     status: string;
     createdAt: Date;
     updatedAt: Date;
+    tags: string[];
 }
 
 const eventSchema = new Schema<IEvent>(
@@ -25,10 +27,12 @@ const eventSchema = new Schema<IEvent>(
     location: { type: String, required: true },
     host: { type: Schema.Types.ObjectId, ref: "User", required: true },
     attendees: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
+    interested: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
     comments: [{ type: Schema.Types.ObjectId, ref: "Comment", default: [] }],
     phone: { type: String },
     email: { type: String },
     status: { type: String, enum: ["upcoming", "ongoing", "completed"], default: "upcoming" },
+    tags: [{type: String}]
   },
   { timestamps: true }
 );  
