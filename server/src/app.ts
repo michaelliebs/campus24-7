@@ -3,6 +3,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/db";
 import userRoutes from "./routes/userRoutes";
+import eventRoutes from "./routes/eventRoutes";
 
 const app = express();
 
@@ -21,5 +22,6 @@ connectDB();
 
 // Routes
 app.use("/api/users", userRoutes);
+app.use("/api/events", eventRoutes);
 
 export default app;
