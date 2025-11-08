@@ -2,7 +2,6 @@ import { Router, Request, Response } from 'express';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import User, { IUser } from "../models/Users";
-import Event, { IEvent } from "../models/Events";
 import { getUsers } from "../controllers/userController";
 import { Document } from 'mongoose';
 import { requireAuth } from '../middleware/authMiddleware';
