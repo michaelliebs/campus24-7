@@ -4,8 +4,9 @@ import Header from './components/homepage/Header';
 import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import HomePage from './pages/HomePage';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
+import Profile from './pages/Profile';
 
 function App() {
   return (
@@ -37,6 +38,14 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/profile/:id"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
           <Route path="*" element={<p>Page not found. Go to <a href="/home">Home</a></p>} />
         </Routes>
       </BrowserRouter>
@@ -45,9 +54,12 @@ function App() {
 }
 
 function Account() {
-  return (
-    <h1>Account</h1>
-  );
+  const { user } = useAuth();
+
+  if (!user) return <p>Loading...</p>;
+
+  // Redirect to the user's profile page
+  return <Navigate to={`/profile/${user._id}`} replace />;
 }
 
 export default App

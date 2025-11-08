@@ -26,9 +26,9 @@ const eventSchema = new Schema<IEvent>(
     time: { type: String, required: true }, // e.g., "18:00"
     location: { type: String, required: true },
     host: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    attendees: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    interested: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    attendees: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
+    interested: [{ type: Schema.Types.ObjectId, ref: "User", default: [] }],
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment", default: [] }],
     phone: { type: String },
     email: { type: String },
     status: { type: String, enum: ["upcoming", "ongoing", "completed"], default: "upcoming" },

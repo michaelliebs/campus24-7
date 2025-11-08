@@ -2,12 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 
 interface User {
+  _id: any;
   id: string;
   name: string;
   email: string;
 }
 
 interface AuthContextType {
+  _id: string;
   user: User | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
