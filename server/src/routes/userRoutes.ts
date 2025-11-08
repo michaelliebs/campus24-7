@@ -2,6 +2,7 @@ import { Router, Request, Response } from 'express';
 import bcrypt from "bcryptjs";
 import jwt from 'jsonwebtoken';
 import User, { IUser } from "../models/Users";
+import Event, { IEvent } from "../models/Events";
 import { getUsers } from "../controllers/userController";
 import { Document } from 'mongoose';
 import { requireAuth } from '../middleware/authMiddleware';
@@ -142,5 +143,49 @@ router.post("/logout", (req: Request, res: Response) => {
   clearAuthCookie(res);
   return res.status(200).json({ message: "Logged out" });
 });
+
+router.get("/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id)
+      .select("name email bio major status eventsHosted eventsAttending") // exclude password
+      .populate("eventsHosted", "title date status") // minimal event info for profile
+      .populate("eventsAttending", "title date status");
+
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    return res.json({ user });
+  } catch (err) {
+    console.error("Error fetching user profile:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+// PATCH /users/me
+router.patch("/me", requireAuth, async (req: Request, res: Response) => {
+  const authReq = req as any; 
+  const { name, bio, major, status } = req.body;
+
+  try {
+    const user = await User.findById(authReq.user.userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    if (name !== undefined) user.name = name;
+    if (bio !== undefined) user.bio = bio;
+    if (major !== undefined) user.major = major;
+    if (status !== undefined) user.status = status;
+
+    await user.save();
+
+    const { password, ...safeUser } = user.toObject();
+    return res.json({ message: "Profile updated", user: safeUser });
+  } catch (err) {
+    console.error("Error updating profile:", err);
+    return res.status(500).json({ error: "Server error" });
+  }
+});
+
+
 
 export default router;

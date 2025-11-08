@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { login } from "../api/auth";
 import type { IUserLogin } from "../types/user";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import "../stylesheets/Login.css";
 
 const Login = () => {
@@ -14,6 +14,8 @@ const Login = () => {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -21,13 +23,13 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
   try {
-    const data = await login(formData);
+    const data = await login(formData.email, formData.password);
     console.log("Logged in user:", data);
     setError(null);
+
     navigate("/home", { replace: true });
 
-    // // Save token to localStorage or context
-    // localStorage.setItem("token", data.token);
+
   } catch (err: unknown) {
     if (axios.isAxiosError(err)) {
       setError(err.response?.data?.message || "Login failed");

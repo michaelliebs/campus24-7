@@ -1,27 +1,41 @@
 import { Router, Request, Response } from 'express';
 import Event, { IEvent } from "../models/Events";
+import { requireAuth, AuthRequest } from "../middleware/authMiddleware";
 import { getEvents } from "../controllers/eventController";
 import { Document } from 'mongoose';
 
 const router = Router();
 
-router.post('/create', async (req: Request, res: Response) => {
-  const { title, description, date, time, location, host, email, phone, status } = req.body;
-  if ( !title || !description || !date || !time || !location || !host || !status) {
+router.get("/", getEvents);
+
+router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
+  const { title, description, date, time, location, email, phone } = req.body;
+  if (!title || !description || !date || !time || !location) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
+  if (!req.user?.userId) {
+    return res.status(401).json({ error: "Not authorized" });
+  }
+
   try {
+
+    const eventDateTime = new Date(`${date}T${time}:00`);
+
+    if (isNaN(eventDateTime.getTime())) {
+      return res.status(400).json({ error: "Invalid date or time format" });
+    }
+
     const newEvent = await Event.create({
       title,
       description,
-      date,
+      date: eventDateTime,
       time,
       location,
-      host,
+      host: req.user!.userId,
       phone,
       email,
-      status
+      attendees: [req.user!.userId],
     });
 
     return res.status(201).json({ message: "Event successfully created", event: newEvent });

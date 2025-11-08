@@ -24,6 +24,8 @@ main#home-page {
   height: 100%;
   margin: 0;
   padding: 20px 0 0 20px;
+  flex-direction: row;
+  margin-top: var(--header-height);
 }
 
 /* Sidebar */
@@ -32,7 +34,7 @@ aside#filter-events {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
-  width: 300px;
+  min-width: 200px;
   height: fit-content;
 }
 
@@ -69,12 +71,13 @@ aside h3 {
 
 /* Events Section */
 .container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   margin: 0 20px;
   gap: 20px;
   align-items: start;
   height: 0;
+  flex-wrap: wrap;
+
 }
 
 .event {
@@ -83,6 +86,8 @@ aside h3 {
   padding: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 40%;
+  flex: 1;
 }
 
 .event:hover {

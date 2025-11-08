@@ -22,6 +22,6 @@ connectDB();
 
 // Routes
 app.use("/api/users", userRoutes);
-app.use("api/events", eventRoutes);
+app.use("/api/events", eventRoutes);
 
 export default app;

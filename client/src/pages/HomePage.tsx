@@ -1,4 +1,6 @@
 import "../stylesheets/HomePage.css"
+import { EventItem, RandomEventItemProps } from "../components/homepage/EventItem";; 
+import type { EventItemProps } from "../components/homepage/EventItem";;
 
 const HomePage = () => {
   return (
@@ -74,6 +76,10 @@ const HomePage = () => {
           </div>
         </div>
 
+        {[1,2,3,4,5,6,7,8,9,10].map(_ => {
+          const rdProps: EventItemProps = RandomEventItemProps();
+          return <EventItem {...rdProps}/> 
+        })}
       </section>
     </main>
   );

@@ -1,6 +1,8 @@
 :root {
   --primary: #f77;
   --secondary: #7f7;
+  --header-height: 70px;
+  box-sizing: border-box; 
 }
 
 html, body, #root {
