@@ -7,7 +7,36 @@ import User from '../models/Users';
 
 const router = Router();
 
-router.get("/", getEvents);
+// Define a reusable populate object for comments + replies + user
+const commentPopulate = {
+  path: "comments",
+  select: "content user createdAt replies",
+  populate: [
+    { path: "user", select: "name _id" }, // comment author
+    {
+      path: "replies",
+      select: "content user createdAt",
+      populate: { path: "user", select: "name _id" }, // reply authors
+    },
+  ],
+};
+
+// GET all events
+router.get("/", async (req: AuthRequest, res: Response) => {
+  try {
+    const events = await Event.find()
+      .populate("host", "name email")
+      .populate("attendees", "name email")
+      .populate("interested", "name email")
+      .populate(commentPopulate)
+      .sort({ date: 1 });
+
+    res.status(200).json(events);
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
   const { title, description, date, time, location, host, email, phone, status, tags } = req.body;
@@ -60,7 +89,7 @@ router.post('/create', requireAuth, async (req: AuthRequest, res: Response) => {
 router.put('/edit/:id', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const { id } = req.params;
-    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true });
+    const updatedEvent = await Event.findByIdAndUpdate(id, req.body, { new: true }).populate(commentPopulate);
 
     if (!updatedEvent) {
       return res.status(404).json({ error: "Event not found" });
@@ -73,14 +102,11 @@ router.put('/edit/:id', requireAuth, async (req: AuthRequest, res: Response) => 
   }
 });
 
+// Delete event
 router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res: Response) => {
   try {
-    const { id } = req.params;
-    const deletedEvent = await Event.findByIdAndDelete(id);
-
-    if (!deletedEvent) {
-      return res.status(404).json({ error: "Event not found" });
-    }
+    const deletedEvent = await Event.findByIdAndDelete(req.params.id);
+    if (!deletedEvent) return res.status(404).json({ error: "Event not found" });
 
     res.status(200).json({ message: "Event successfully deleted", event: deletedEvent });
   } catch(err) {
@@ -88,27 +114,26 @@ router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res: Response
     res.status(500).json({ error: "Failed to delete event" });
   }
 });
-
-// Get single event by ID
+// Get single event by ID with populated comments and replies
 router.get("/:id", requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
   try {
     const event = await Event.findById(req.params.id)
       .populate("host", "name _id")
       .populate("attendees", "name _id")
       .populate("interested", "name _id")
-      .populate("comments");
-
+      .populate(commentPopulate);
     if (!event) {
       res.status(404).json({ error: "Event not found" });
       return;
     }
 
-    res.json(event);
+    res.status(200).json(event);
   } catch (err) {
     console.error("Error fetching event:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 router.post("/:id/interested", requireAuth, async (req: AuthRequest, res: Response) => {
   try {

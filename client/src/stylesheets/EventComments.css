@@ -1,0 +1,157 @@
+.ec-container {
+  width: 100%;
+  background-color: #fefefe;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.ec-title {
+  font-size: 1.4em;
+  font-weight: bold;
+  margin-bottom: 12px;
+  text-align: center;
+  color: #333;
+}
+
+.ec-form, .ec-reply-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.ec-input, .ec-reply-input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 0.95em;
+}
+
+.ec-input:focus, .ec-reply-input:focus {
+  border-color: #2286f0;
+  outline: none;
+  box-shadow: 0 0 5px rgba(34,134,240,0.3);
+}
+
+.ec-submit, .ec-reply-submit {
+  padding: 6px 14px;
+  background-color: #2286f0;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ec-submit:hover, .ec-reply-submit:hover {
+  background-color: #1561b3;
+}
+
+.ec-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ec-item {
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #fff;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  word-break: break-word;
+}
+
+.ec-main {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ec-text {
+  max-width: 90%;
+  width: fit-content;
+}
+
+.ec-author, .ec-reply-author {
+  font-weight: bold;
+  color: #0077cc;
+  margin-bottom: 2px;
+}
+
+.ec-content, .ec-reply-content {
+  margin: 2px 0;
+  line-height: 1.3;
+}
+
+.ec-date, .ec-reply-date {
+  font-size: 0.8em;
+  color: #777;
+}
+
+.ec-delete {
+  cursor: pointer;
+  color: #dc3545;
+  font-size: 1.1em;
+  transition: color 0.2s;
+}
+
+.ec-delete:hover {
+  color: #a71d2a;
+}
+
+.ec-reply {
+  margin-left: 18px;
+  margin-top: 8px;
+  padding-left: 10px;
+  border-left: 2px solid #ccc;
+  background: #f9f9f9;
+  border-radius: 5px;
+  padding: 8px;
+}
+
+.ec-no-comments {
+  text-align: center;
+  color: #555;
+  font-size: 0.95em;
+}
+
+.ec-pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.ec-pagination button {
+  padding: 6px 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2286f0;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.ec-pagination button:hover {
+  background-color: #1561b3;
+}
+
+.ec-pagination button:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.ec-loading {
+  text-align: center;
+  font-weight: bold;
+  color: #555;
+  margin-top: 10px;
+}
+
+.ec-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

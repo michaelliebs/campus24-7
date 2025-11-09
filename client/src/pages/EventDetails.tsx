@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext"; // assuming this gives user._id
 import "../stylesheets/EventDetails.css";
+import EventComments from "../components/EventComments";
 
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
@@ -78,14 +79,44 @@ export const EventDetails = () => {
         <div>💬 {event.comments?.length || 0} comments</div>
       </section>
 
-      <div style={{ marginTop: "1rem" }}>
+      <div className="event-buttons">
         <button onClick={toggleAttending} className={isAttending ? "active" : ""}>
           {isAttending ? "✅ Attending" : "🎟️ Mark as Attending"}
         </button>
+
         <button onClick={toggleInterested} className={isInterested ? "active" : ""}>
           {isInterested ? "⭐ Interested" : "👀 Mark as Interested"}
         </button>
+
+        {isOwner && (
+          <>
+            <button
+              onClick={() => navigate(`/events/edit/${event._id}`)}
+              className="edit-btn"
+            >
+              ✏️ Edit Event
+            </button>
+
+            <button
+              onClick={async () => {
+                if (!confirm("Are you sure you want to delete this event?")) return;
+                try {
+                  await axios.delete(`${API_URL}/events/delete/${event._id}`, { withCredentials: true });
+                  alert("Event deleted!");
+                  navigate("/home");
+                } catch (err) {
+                  console.error(err);
+                  alert("Failed to delete event");
+                }
+              }}
+              className="delete-btn"
+            >
+              🗑️ Delete Event
+            </button>
+          </>
+        )}
       </div>
+
 
       {event.tags && (
         <div className="tags">
@@ -96,34 +127,8 @@ export const EventDetails = () => {
           ))}
         </div>
       )}
-      {isOwner && (
-            <div style={{ marginTop: "1rem" }}>
-                <button
-                onClick={() => navigate(`/events/edit/${event._id}`)}
-                className="edit-btn"
-                >
-                ✏️ Edit Event
-                </button>
-                <button
-                onClick={async () => {
-                    if (!confirm("Are you sure you want to delete this event?")) return;
-                    try {
-                    await axios.delete(`${API_URL}/events/delete/${event._id}`, { withCredentials: true });
-                    alert("Event deleted!");
-                    navigate("/home");
-                    } catch (err) {
-                    console.error(err);
-                    alert("Failed to delete event");
-                    }
-                }}
-                className="delete-btn"
-                style={{ marginLeft: "10px" }}
-                >
-                🗑️ Delete Event
-                </button>
-            </div>
-            )}
 
+      <EventComments eventId={event._id} eventHostId={event.host?._id} />
     </main>
   );
 };
