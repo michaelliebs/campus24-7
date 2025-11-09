@@ -22,12 +22,13 @@ interface UserProfile {
   status?: string;
   eventsHosted: Event[];
   eventsAttending: Event[];
+  eventsInterested: Event[]; // ✅ added
 }
 
 const Profile = () => {
   const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
   const { logout: contextLogout, user: currentUser } = useAuth();
-  const { id } = useParams(); // For `/profile/:id` route
+  const { id } = useParams();
   const [user, setUser] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
@@ -39,7 +40,6 @@ const Profile = () => {
   });
 
   const isOwnProfile = currentUser?._id === id;
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -78,31 +78,28 @@ const Profile = () => {
   };
 
   const handleDelete = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete your profile? This action cannot be undone."
-  );
-  if (!confirmed) return;
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your profile? This action cannot be undone."
+    );
+    if (!confirmed) return;
 
-  try {
-    await axios.delete(`${API_URL}/users/me`, { withCredentials: true });
-    // Clear user in context and redirect
-    await contextLogout(); 
-    // After deletion, redirect to login page
-    navigate("/login");
-  } catch (err) {
-    console.error("Failed to delete profile:", err);
-  }
-};
-
+    try {
+      await axios.delete(`${API_URL}/users/me`, { withCredentials: true });
+      await contextLogout();
+      navigate("/login");
+    } catch (err) {
+      console.error("Failed to delete profile:", err);
+    }
+  };
 
   if (loading) return <p>Loading...</p>;
   if (!user) return <p>User not found</p>;
 
   return (
-    <div className="profile-container" style={{marginTop: "var(--header-height)"}}>
+    <div className="profile-container" style={{ marginTop: "var(--header-height)" }}>
       <h1>{user.name}'s Profile</h1>
 
-      {/* Basic Info */}
+      {/* --- BASIC INFO --- */}
       <div>
         {editMode ? (
           <>
@@ -116,21 +113,20 @@ const Profile = () => {
               Major: <input name="major" value={form.major} onChange={handleChange} />
             </label>
             <label>
-              Status: 
+              Status:
               <select
                 name="status"
                 value={form.status}
                 onChange={(e) => setForm({ ...form, status: e.target.value })}
               >
                 <option value="">Select status</option>
-                <option value="undergraduate">undergraduate</option>
-                <option value="graduate">graduate</option>
-                <option value="alumni">alumni</option>
+                <option value="undergraduate">Undergraduate</option>
+                <option value="graduate">Graduate</option>
+                <option value="alumni">Alumni</option>
               </select>
             </label>
             <button className="save-btn" onClick={handleSave}>Save</button>
             <button className="delete-btn" onClick={handleDelete}>Delete Profile</button>
-
           </>
         ) : (
           <>
@@ -142,59 +138,72 @@ const Profile = () => {
         )}
       </div>
 
-      {/* Events Hosted */}
+      {/* --- MY EVENTS --- */}
       <div>
-        <h2>Events Hosted</h2>
+        <h2>My Events</h2>
         {user.eventsHosted.length === 0 ? (
           <p>No events hosted yet.</p>
         ) : (
           <ul>
-          {user.eventsHosted.map((event) => (
-            <li key={event._id}>
-              <a href={`/events/${event._id}`}>{event.title}</a> -{" "}
-              <span>{new Date(event.date).toLocaleDateString()} {event.time}</span> -{" "}
-              <span className="status-dot" style={{ backgroundColor: getStatusColor(event.status) }}></span>
-              <span>{event.status}</span>
-            </li>
-          ))}
-        </ul>
-
+            {user.eventsHosted.map((event) => (
+              <li key={event._id}>
+                <a href={`/events/${event._id}`}>{event.title}</a> –{" "}
+                <span>{new Date(event.date).toLocaleDateString()} {event.time}</span> –{" "}
+                <span className="status-dot" style={{ backgroundColor: getStatusColor(event.status) }}></span>
+                <span>{event.status}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
-      {/* Events Attending */}
+      {/* --- ATTENDING --- */}
       <div>
-        <h2>Events Attending</h2>
+        <h2>Attending</h2>
         {user.eventsAttending.length === 0 ? (
           <p>Not attending any events.</p>
         ) : (
           <ul>
-          {user.eventsAttending.map((event) => (
-            <li key={event._id}>
-              <a href={`/events/${event._id}`}>{event.title}</a> -{" "}
-              <span>{new Date(event.date).toLocaleDateString()} {event.time}</span> -{" "}
-              <span className="status-dot" style={{ backgroundColor: getStatusColor(event.status) }}></span>
-              <span>{event.status}</span>
-            </li>
-          ))}
-        </ul>
+            {user.eventsAttending.map((event) => (
+              <li key={event._id}>
+                <a href={`/events/${event._id}`}>{event.title}</a> –{" "}
+                <span>{new Date(event.date).toLocaleDateString()} {event.time}</span> –{" "}
+                <span className="status-dot" style={{ backgroundColor: getStatusColor(event.status) }}></span>
+                <span>{event.status}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
+      {/* --- INTERESTED EVENTS --- */}
+      <div>
+        <h2>Interested In</h2>
+        {user.eventsInterested?.length === 0 ? (
+          <p>No interested events yet.</p>
+        ) : (
+          <ul>
+            {user.eventsInterested.map((event) => (
+              <li key={event._id}>
+                <a href={`/events/${event._id}`}>{event.title}</a> –{" "}
+                <span>{new Date(event.date).toLocaleDateString()} {event.time}</span> –{" "}
+                <span className="status-dot" style={{ backgroundColor: getStatusColor(event.status) }}></span>
+                <span>{event.status}</span>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
     </div>
   );
 };
 
-// Helper function for color indicators
 function getStatusColor(status: string) {
   switch (status) {
-    case "upcoming":
-      return "green";
-    case "ongoing":
-      return "orange";
-    case "completed":
-      return "gray";
-    default:
-      return "black";
+    case "upcoming": return "green";
+    case "ongoing": return "orange";
+    case "completed": return "gray";
+    default: return "black";
   }
 }
 
