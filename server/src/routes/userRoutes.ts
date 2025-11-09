@@ -146,9 +146,10 @@ router.get("/:id", async (req: Request, res: Response) => {
     const { id } = req.params;
 
     const user = await User.findById(id)
-      .select("name email bio major status eventsHosted eventsAttending") // exclude password
-      .populate("eventsHosted", "title date time location status") // minimal event info for profile
-      .populate("eventsAttending", "title date time location status");
+      .select("name email bio major status eventsHosted eventsAttending eventsInterested")
+      .populate("eventsHosted", "title date time location status")
+      .populate("eventsAttending", "title date time location status")
+      .populate("eventsInterested", "title date time location status");
 
     if (!user) return res.status(404).json({ error: "User not found" });
 
@@ -158,6 +159,7 @@ router.get("/:id", async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Server error" });
   }
 });
+
 
 // PATCH /users/me
 router.patch("/me", requireAuth, async (req: Request, res: Response) => {

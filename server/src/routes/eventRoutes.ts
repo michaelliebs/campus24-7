@@ -113,25 +113,40 @@ router.get("/:id", requireAuth, async (req: AuthRequest, res: Response): Promise
 router.post("/:id/interested", requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
-    const event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ error: "Event not found" });
+    const eventId = req.params.id;
 
-    const index = event.interested.findIndex((id) => id.toString() === userId);
-    if (index > -1) {
-      // remove user if already interested
-      event.interested.splice(index, 1);
+    const event = await Event.findById(eventId);
+    const user = await User.findById(userId);
+
+    if (!event || !user) {
+      return res.status(404).json({ error: "Event or user not found" });
+    }
+
+    const isInterested = event.interested.some(
+      (interested) => interested.toString() === userId
+    );
+
+    if (isInterested) {
+      event.interested = event.interested.filter(
+        (interested) => interested.toString() !== userId
+      );
+      user.eventsInterested = user.eventsInterested?.filter(
+        (eid) => eid.toString() !== eventId
+      );
     } else {
-      // add user if not already interested
-      event.interested.push(new mongoose.Types.ObjectId(userId)); // <--- cast
+      event.interested.push(new mongoose.Types.ObjectId(userId));
+      user.eventsInterested = user.eventsInterested || [];
+      user.eventsInterested.push(new mongoose.Types.ObjectId(eventId));
     }
 
     await event.save();
-    // populate all relevant fields before sending back
-    const updatedEvent = await Event.findById(req.params.id)
-      .populate("host", "name _id")         // host info
-      .populate("attendees", "name _id")    // attendees info
-      .populate("interested", "name _id")   // interested users
-      .populate("comments");                // comments if needed
+    await user.save();
+
+    const updatedEvent = await Event.findById(eventId)
+      .populate("host", "name _id")
+      .populate("attendees", "name _id")
+      .populate("interested", "name _id")
+      .populate("comments");
 
     res.status(200).json(updatedEvent);
   } catch (err) {
@@ -140,30 +155,37 @@ router.post("/:id/interested", requireAuth, async (req: AuthRequest, res: Respon
   }
 });
 
-// Toggle "attending" status
+
 router.post("/:id/attending", requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
-    const event = await Event.findById(req.params.id);
+    const eventId = req.params.id;
+
+    const event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ error: "Event not found" });
 
-    const index = event.attendees.findIndex((id) => id.toString() === userId);
-    if (index > -1) {
-      // remove user if already attending
-      event.attendees.splice(index, 1);
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ error: "User not found" });
+
+    const isAttending = event.attendees.some(a => a.toString() === userId);
+
+    if (isAttending) {
+      await Promise.all([
+        Event.findByIdAndUpdate(eventId, { $pull: { attendees: userId } }),
+        User.findByIdAndUpdate(userId, { $pull: { eventsAttending: eventId } }),
+      ]);
     } else {
-      // add user if not already attending
-      event.attendees.push(new mongoose.Types.ObjectId(userId));
+      await Promise.all([
+        Event.findByIdAndUpdate(eventId, { $addToSet: { attendees: userId } }),
+        User.findByIdAndUpdate(userId, { $addToSet: { eventsAttending: eventId } }),
+      ]);
     }
 
-    await event.save();
-
-    // populate all relevant fields before sending back
-    const updatedEvent = await Event.findById(req.params.id)
-      .populate("host", "name _id")         // host info
-      .populate("attendees", "name _id")    // attendees info
-      .populate("interested", "name _id")   // interested users
-      .populate("comments");                // comments if needed
+    const updatedEvent = await Event.findById(eventId)
+      .populate("host", "name _id")
+      .populate("attendees", "name _id")
+      .populate("interested", "name _id")
+      .populate("comments");
 
     res.status(200).json(updatedEvent);
   } catch (err) {
@@ -171,6 +193,8 @@ router.post("/:id/attending", requireAuth, async (req: AuthRequest, res: Respons
     res.status(500).json({ error: "Server error" });
   }
 });
+
+
 
 
 
