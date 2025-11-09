@@ -21,7 +21,7 @@ const Filter = ({ selectedTags, onAddTag, onRemoveTag }: FilterProps) => {
 
   return (
     <aside id="filter-events">
-      <h3>Filter Events</h3>
+      <h3>Filter Tags</h3>
 
       <div className="filter-group">
         <label>
@@ -52,14 +52,14 @@ const Filter = ({ selectedTags, onAddTag, onRemoveTag }: FilterProps) => {
         <div><input type="checkbox" /> Outdoor</div> */}
       </div>
 
-      <div className="filter-group">
+      {/* <div className="filter-group">
         <label>Attendance:</label>
         <div><input type="checkbox" /> 0-50</div>
         <div><input type="checkbox" /> 51-100</div>
         <div><input type="checkbox" /> 100+</div>
       </div>
 
-      <button>Apply Filters</button>
+      <button>Apply Filters</button> */}
     </aside>
   );
 };
