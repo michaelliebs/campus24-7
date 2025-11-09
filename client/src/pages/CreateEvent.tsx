@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 type CreateEventFormData = {
-  title: string,
-  description: string,
-  date: string,
-  time: string,
-  location: string,
-  tags: [string]
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  location: string;
+  tags: string[];
 };
 
 const CreateEvent = () => {
@@ -22,125 +22,78 @@ const CreateEvent = () => {
     time: "",
     location: "",
     tags: []
-  })
+  });
+
   const navigate = useNavigate();
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  }
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
-  const MAX_TAGS = 5;
-  const MAX_TAG_LEN = 25;
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    let errors: string[] = [];
-    
-    // Possibly disallow past scheduling
-      /* date: Date; */
-      /* time: string; */
-
-
-    /* tags: string[]; */
-    const tag_list: string[] = formData.tags
-    const longest_tag_len: number = Math.max(...tag_list.map(t => t.length));
-    if(tag_list.length > MAX_TAG_LEN) {
-      errors.push("Too many tags, max of "+MAX_TAGS);
-    } else if(longest_tag_len > MAX_TAG_LEN) {
-      errors.push("One or more of your tags are too long, a single tag can be " + MAX_TAG_LEN + " characters long");
+    try {
+      await axios.post(`${API_URL}/events/create`, formData, { withCredentials: true });
+      navigate("/home");
+    } catch (err) {
+      console.error(err);
+      alert("Something went wrong while creating the event!");
     }
-    // Handled by 'required' + 'pattern'
-      /* title: string; */
-      /* description: string; */
-      /* location: string; */
-    
-    if(errors.length > 0) {
-      alert("One or more fields are not properly filled out!:\n"+errors[0]);
-    } else {
-      axios.post(`${API_URL}/events/create`, formData, {
-        withCredentials: true,
-      })
-        .then(res => {
-          console.log(res);
-          navigate("/home");
-        })
-        .catch(err => {
-          console.error(err);
-        });
-    }
+  };
 
-  }
+  return (
+    <main id="create-event">
+      <div className="form-container">
+        <h2>Create a New Event</h2>
+        <p className="form-description">Fill out the details below to post your event.</p>
 
-  return (<main id="create-event">
-    <h2>Create Event</h2>
-    <form onSubmit={handleSubmit}>
-      {/* title: string; */}
-      <label> Title of event:<br/>
-        <input name='title' id='title' type='text' onChange={handleChange} 
-          required pattern="^(?=.*\S).{1,59}$"
-        />
-      </label><br/>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="title">Title</label>
+            <input name="title" id="title" type="text" required pattern="^(?=.*\S).{1,59}$" onChange={handleChange}/>
+          </div>
 
-      {/* description: string; */}
-      <label> Description of event:<br/>
-        <textarea name='description' id='description' onChange={handleChange}
-          required 
-          // pattern="^(?=.*\S).{1,1999}$"
-        />
-      </label><br/>
+          <div className="form-group">
+            <label htmlFor="description">Description</label>
+            <textarea name="description" id="description" required onChange={handleChange} rows={5}/>
+          </div>
 
-      {/* date: Date; */}
-      <label> Date of event:<br/>
-        <input name='date' id='date' type='date' onChange={handleChange}/>
-      </label><br/>
+          <div className="form-row">
+            <div className="form-group half">
+              <label htmlFor="date">Date</label>
+              <input name="date" id="date" type="date" onChange={handleChange}/>
+            </div>
+            <div className="form-group half">
+              <label htmlFor="time">Time</label>
+              <input name="time" id="time" type="time" onChange={handleChange}/>
+            </div>
+          </div>
 
-      {/* time: string; */}
-      <label> Time of event:<br/>
-        <input name='time' id='time' type='time' onChange={handleChange}/>
-      </label><br/>
+          <div className="form-group">
+            <label htmlFor="location">Location</label>
+            <input name="location" id="location" type="text" required pattern="^(?=.*\S).{1,59}$" onChange={handleChange}/>
+          </div>
 
-      {/* location: string; */}
-      <label> Location of event:<br/>
-        <input name='location' id='location' type='text' onChange={handleChange}
-          required pattern="^(?=.*\S).{1,59}$"
-        />
-      </label><br/>
+          <div className="form-group">
+            <label htmlFor="tags">Tags (comma-separated)</label>
+            <input
+              name="tags"
+              id="tags"
+              type="text"
+              placeholder="e.g. music, workshop, networking"
+              onChange={(e) => {
+                const parts = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                setFormData(prev => ({ ...prev, tags: parts }));
+              }}
+            />
+          </div>
 
-      {/* tags: string[]; */}
-      <label> Event Tags (comma-separated):<br/>
-        <input
-          name='tags'
-          id='tags'
-          type='text'
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-        const raw = e.target.value;
-        const parts = raw
-          .split(',')
-          .map(s => s.trim())
-          .filter(s => s.length > 0);
-        // Store as an array (cast to any to avoid changing surrounding types)
-        setFormData(prev => ({ ...prev, tags: parts as any }));
-          }}
-        />
-      </label><br/>
-
-      {/* N/A for input */}
-        {/* host: Types.ObjectId; // reference to the user hosting the event */}
-        {/* attendees: Types.ObjectId[]; // list of users attending */}
-        {/* interested: Types.ObjectId[]; // list of users interested */}
-        {/* comments: Types.ObjectId[]; // list of comments on the event */}
-        {/* email: string; */}
-        {/* phone: string; */}
-        {/* status: string; */}
-        {/* createdAt: Date; */}
-        {/* updatedAt: Date; */}
-    <button type='submit'>Create</button>
-    </form>
-  </main>);
+          <button type="submit" className="submit-btn">Create Event</button>
+        </form>
+      </div>
+    </main>
+  );
 };
 
 export { CreateEvent };
