@@ -62,6 +62,7 @@ const HomePage = () => {
         searchTerm={searchTerm}
         onSearchChange={(value) => setSearchTerm(value)}
       />
+
       <main id="home-page">
         <Filter />
 
@@ -83,12 +84,14 @@ const HomePage = () => {
             tags: e.tags,
             posted_by_id: e.host._id,
             event_id: e._id
-          }
+          };
           return <EventItem {...props} />
-        })}
+        })
+      )}
       </section>
     </main>
+    </>
   );
-}
+};
 
 export default HomePage;
