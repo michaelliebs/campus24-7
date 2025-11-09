@@ -1,5 +1,4 @@
-// import React, { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FaUserCircle } from "react-icons/fa";
@@ -13,7 +12,9 @@ type HeaderProps = {
 export default function Header({ searchTerm, onSearchChange }: HeaderProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation(); // Track current path
   const [dropdownOpen, setDropdownOpen] = useState(false);
+
   const handleLogout = async () => {
     try {
       await logout();
@@ -26,6 +27,9 @@ export default function Header({ searchTerm, onSearchChange }: HeaderProps) {
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
 
+  const showSearchBar = location.pathname === "/home";
+  const hideCreateButton = location.pathname === "/create-event";
+
   return (
     <header id="site-header">
       <section className="links">
@@ -34,48 +38,58 @@ export default function Header({ searchTerm, onSearchChange }: HeaderProps) {
         </div>
       </section>
 
-      <div id='search-bar'>
-        <input
-          placeholder="Search Events..."
-          value={searchTerm}
-          onChange={(e) => onSearchChange(e.target.value)}
-        />
-      </div>
+      {/* Search bar only on /home */}
+      {showSearchBar && (
+        <div id='search-bar'>
+          <input
+            placeholder="Search Events..."
+            value={searchTerm}
+            onChange={(e) => onSearchChange(e.target.value)}
+          />
+        </div>
+      )}
 
-      {user && (<>
-        <Link to="/create-event" style={{ textDecoration: "none" }}>
-          <button className='create-event-btn'>
-            <span style={{ fontSize: "22px", marginRight: "10px" }}>+</span>
-            Create event
-          </button>
-        </Link>
+      {user && (
+        <>
+          {/* Hide "Create Event" button if already on /create-event */}
+          {!hideCreateButton && (
+            <Link to="/create-event" style={{ textDecoration: "none" }}>
+              <button className='create-event-btn'>
+                <span style={{ fontSize: "22px", marginRight: "10px" }}>+</span>
+                Create event
+              </button>
+            </Link>
+          )}
 
-        <div className="profile-menu">
-          {/* Profile icon */}
-          <div className="profile-icon" onClick={toggleDropdown}>
-            {user.profilePicture ? (
-              <img
-                src={user.profilePicture}
-                alt={`${user.name}'s avatar`}
-                className="avatar-image"
-              />
-            ) : (
-              <FaUserCircle className="avatar-icon" />
+          <div className="profile-menu">
+            <div className="profile-icon" onClick={toggleDropdown}>
+              {user.profilePicture ? (
+                <img
+                  src={user.profilePicture}
+                  alt={`${user.name}'s avatar`}
+                  className="avatar-image"
+                />
+              ) : (
+                <FaUserCircle className="avatar-icon" />
+              )}
+            </div>
+
+            {dropdownOpen && (
+              <div className="dropdown">
+                <button
+                  onClick={() => {
+                    navigate(`/profile/${user._id}`);
+                    setDropdownOpen(false);
+                  }}
+                >
+                  Profile
+                </button>
+                <button onClick={handleLogout}>Sign Out</button>
+              </div>
             )}
           </div>
-
-          {dropdownOpen && (
-            <div className="dropdown">
-              <button onClick={() => { navigate(`/profile/${user._id}`); setDropdownOpen(false); }}>
-                Profile
-              </button>
-              <button onClick={handleLogout}>Sign Out</button>
-            </div>
-          )}
-        </div>
-      </>)}
+        </>
+      )}
     </header>
   );
 }
-
-

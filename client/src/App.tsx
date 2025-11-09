@@ -17,7 +17,9 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-container">
-      <Header />
+      <Header searchTerm={""} onSearchChange={function (value: string): void {
+        throw new Error("Function not implemented.");
+      } } />
       <main>{children}</main>
     </div>
   );
