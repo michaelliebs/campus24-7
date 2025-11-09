@@ -20,7 +20,7 @@ const HomePage = () => {
         const eventsWithHost: EventAndHost[] = await Promise.all(
           result.data.map(async (event) => {
             try {
-              const userRes = await axios.get(`${API_URL}/users/${event.host}`);
+              const userRes = await axios.get(`${API_URL}/users/${event.host._id}`, { withCredentials: true });
               console.log("userres:", userRes)
               return { ...event, name: userRes.data.user.name }; // EventAndHost
             } catch (err) {
