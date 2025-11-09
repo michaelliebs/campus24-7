@@ -25,7 +25,7 @@ export default function Header() {
     <header id="site-header">
       <section className="links">
         <div className="link-wrapper">
-          <Link to="/home">Home</Link>
+          <Link to="/home">campus24/7</Link>
         </div>
       </section>
 

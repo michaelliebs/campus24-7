@@ -100,7 +100,7 @@ const Profile = () => {
 
   return (
     <div className="profile-container" style={{marginTop: "var(--header-height)"}}>
-      <h1>Profile</h1>
+      <h1>{user.name}'s Profile</h1>
 
       {/* Basic Info */}
       <div>
@@ -116,7 +116,17 @@ const Profile = () => {
               Major: <input name="major" value={form.major} onChange={handleChange} />
             </label>
             <label>
-              Status: <input name="status" value={form.status} onChange={handleChange} />
+              Status: 
+              <select
+                name="status"
+                value={form.status}
+                onChange={(e) => setForm({ ...form, status: e.target.value })}
+              >
+                <option value="">Select status</option>
+                <option value="undergraduate">undergraduate</option>
+                <option value="graduate">graduate</option>
+                <option value="alumni">alumni</option>
+              </select>
             </label>
             <button className="save-btn" onClick={handleSave}>Save</button>
             <button className="delete-btn" onClick={handleDelete}>Delete Profile</button>
@@ -124,7 +134,6 @@ const Profile = () => {
           </>
         ) : (
           <>
-            <p><strong>Name:</strong> {user.name}</p>
             {user.bio && <p><strong>Bio:</strong> {user.bio}</p>}
             {user.major && <p><strong>Major:</strong> {user.major}</p>}
             {user.status && <p><strong>Status:</strong> {user.status}</p>}
