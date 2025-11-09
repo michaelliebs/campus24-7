@@ -74,7 +74,8 @@ const HomePage = () => {
             num_attending: e.attendees.length,
             num_interested: e.interested.length,
             num_comments: e.comments.length,
-            tags: e.tags
+            tags: e.tags,
+            posted_by_id: e.host._id
           }
           return <EventItem {...props} />
         })}

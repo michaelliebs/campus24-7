@@ -8,7 +8,8 @@ type EventItemProps = {
   num_attending: number,
   num_interested: number,
   num_comments: number
-  tags: string[]
+  tags: string[],
+  posted_by_id: string
 }
 
 const RandomEventItemProps = () => {
@@ -46,13 +47,24 @@ const EventItem = ({
   num_attending,
   num_interested,
   num_comments,
-  tags
+  tags,
+  posted_by_id
 }: EventItemProps) => {
   return (<div className="event">
     <div className="title-author" style={{display: "flex"}}>
       <h2 style={{display: "inline", margin: 0}}>{title}</h2>
       <span style={{flex: 1}}> </span>
-      <span className="meta">Posted by <strong>{posted_by}</strong></span>
+      <span className="meta">
+        Posted by <strong>
+          <a
+            className="user-link"
+            href={`/profile/${posted_by_id}`}
+            aria-label={`View ${posted_by}'s profile`}
+          >
+            {posted_by}
+          </a>
+        </strong>
+      </span>
     </div>
     
     <div className="time-date-location-row">
