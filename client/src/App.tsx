@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import SignUp from "./pages/SignUp";
 import HomePage from "./pages/HomePage";
 import Profile from "./pages/Profile";
+import EventDetail from "./pages/EventDetails";
 import { CreateEvent } from "./pages/CreateEvent";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -113,6 +114,17 @@ export default function App() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/events/:id"
+            element={
+              <ProtectedRoute>
+                <ProtectedLayout>
+                  <EventDetail />
+                </ProtectedLayout>
+              </ProtectedRoute>
+            }
+          />
+
 
           {/* Fallback */}
           <Route

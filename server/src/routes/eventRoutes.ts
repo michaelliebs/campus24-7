@@ -2,6 +2,7 @@ import { Router, Response } from 'express';
 import Event from "../models/Events";
 import { requireAuth, AuthRequest } from "../middleware/authMiddleware";
 import { getEvents } from "../controllers/eventController";
+import mongoose from 'mongoose';
 
 const router = Router();
 
@@ -76,6 +77,76 @@ router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res: Response
   } catch(err) {
     console.error("Error deleting event:", err);
     res.status(500).json({ error: "Failed to delete event" });
+  }
+});
+
+// Get single event by ID
+router.get("/:id", requireAuth, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const event = await Event.findById(req.params.id)
+      .populate("host", "name _id")
+      .populate("attendees", "name _id")
+      .populate("interested", "name _id")
+      .populate("comments");
+
+    if (!event) {
+      res.status(404).json({ error: "Event not found" });
+      return;
+    }
+
+    res.json(event);
+  } catch (err) {
+    console.error("Error fetching event:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.post("/:id/interested", requireAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+
+    const index = event.interested.findIndex((id) => id.toString() === userId);
+    if (index > -1) {
+      // remove user if already interested
+      event.interested.splice(index, 1);
+    } else {
+      // add user if not already interested
+      event.interested.push(new mongoose.Types.ObjectId(userId)); // <--- cast
+    }
+
+    await event.save();
+    const updated = await event.populate("interested", "name _id");
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("Error toggling interest:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Toggle "attending" status
+router.post("/:id/attending", requireAuth, async (req: AuthRequest, res: Response) => {
+  try {
+    const userId = req.user!.userId;
+    const event = await Event.findById(req.params.id);
+    if (!event) return res.status(404).json({ error: "Event not found" });
+
+    const index = event.attendees.findIndex((id) => id.toString() === userId);
+    if (index > -1) {
+      // remove user if already attending
+      event.attendees.splice(index, 1);
+    } else {
+      // add user if not already attending
+      event.attendees.push(new mongoose.Types.ObjectId(userId)); // <--- cast
+    }
+
+    await event.save();
+    const updated = await event.populate("attendees", "name _id");
+    res.status(200).json(updated);
+  } catch (err) {
+    console.error("Error toggling attending:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

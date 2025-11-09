@@ -1,0 +1,100 @@
+button {
+  margin-right: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background-color: #e0e0e0;
+}
+
+button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* EventDetails.css */
+
+.event-details {
+  max-width: 900px;
+  margin: calc(var(--header-height) + 20px) auto 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+}
+
+.event-details h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+  color: #222;
+}
+
+.event-details p {
+  line-height: 1.6;
+  margin: 0.5rem 0;
+}
+
+.event-details a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.event-details a:hover {
+  text-decoration: underline;
+}
+
+.details-meta {
+  display: flex;
+  gap: 2rem;
+  margin: 1rem 0;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 0.35rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  color: #555;
+  transition: background-color 0.2s;
+}
+
+.tag:hover {
+  background-color: #e0e0e0;
+}
+
+.toggle-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.toggle-buttons button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggle-buttons button:hover {
+  background-color: #0056b3;
+}
+
+.toggle-buttons button.active {
+  background-color: #28a745;
+}

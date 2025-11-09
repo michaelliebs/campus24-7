@@ -57,7 +57,8 @@ const HomePage = () => {
             num_interested: e.interested.length,
             num_comments: e.comments.length,
             tags: e.tags,
-            posted_by_id: e.host._id
+            posted_by_id: e.host._id,
+            event_id: e._id
           }
           return <EventItem {...props} />
         })}
