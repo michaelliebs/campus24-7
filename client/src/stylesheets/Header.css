@@ -26,6 +26,13 @@
   flex: 1
 }
 
+#search-bar {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #search-bar input {
   border: none;
   padding: 8px 12px;

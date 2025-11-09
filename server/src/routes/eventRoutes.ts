@@ -126,14 +126,21 @@ router.post("/:id/interested", requireAuth, async (req: AuthRequest, res: Respon
     }
 
     await event.save();
-    const updated = await event.populate("interested", "name _id");
-    res.status(200).json(updated);
+    // populate all relevant fields before sending back
+    const updatedEvent = await Event.findById(req.params.id)
+      .populate("host", "name _id")         // host info
+      .populate("attendees", "name _id")    // attendees info
+      .populate("interested", "name _id")   // interested users
+      .populate("comments");                // comments if needed
+
+    res.status(200).json(updatedEvent);
   } catch (err) {
     console.error("Error toggling interest:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
 
+// Toggle "attending" status
 router.post("/:id/attending", requireAuth, async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.user!.userId;
@@ -142,23 +149,29 @@ router.post("/:id/attending", requireAuth, async (req: AuthRequest, res: Respons
 
     const index = event.attendees.findIndex((id) => id.toString() === userId);
     if (index > -1) {
-      // remove user if currently attending
+      // remove user if already attending
       event.attendees.splice(index, 1);
-      await User.findByIdAndUpdate(userId, { $pull: { eventsAttending: event._id } });
     } else {
-      // add user if not attending
+      // add user if not already attending
       event.attendees.push(new mongoose.Types.ObjectId(userId));
-      await User.findByIdAndUpdate(userId, { $addToSet: { eventsAttending: event._id } });
     }
 
     await event.save();
-    const updated = await event.populate("attendees", "name _id");
-    res.status(200).json(updated);
+
+    // populate all relevant fields before sending back
+    const updatedEvent = await Event.findById(req.params.id)
+      .populate("host", "name _id")         // host info
+      .populate("attendees", "name _id")    // attendees info
+      .populate("interested", "name _id")   // interested users
+      .populate("comments");                // comments if needed
+
+    res.status(200).json(updatedEvent);
   } catch (err) {
     console.error("Error toggling attending:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
+
 
 
 export default router;

@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import EventDetail from "./pages/EventDetails";
 import { CreateEvent } from "./pages/CreateEvent";
 import ProtectedRoute from "./components/ProtectedRoute";
+import EditEvent from "./pages/EditEvent";
 
 // ---------- Layout Components ----------
 
@@ -17,7 +18,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function ProtectedLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-container">
-      <Header />
+      <Header searchTerm={""} onSearchChange={() => {}} />
       <main>{children}</main>
     </div>
   );
@@ -124,7 +125,16 @@ export default function App() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/events/edit/:id"
+            element={
+              <ProtectedRoute>
+                <ProtectedLayout>
+                  <EditEvent />
+                </ProtectedLayout>
+              </ProtectedRoute>
+            }
+          />
 
           {/* Fallback */}
           <Route

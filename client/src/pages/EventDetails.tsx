@@ -1,5 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext"; // assuming this gives user._id
 import "../stylesheets/EventDetails.css";
@@ -11,6 +12,8 @@ export const EventDetails = () => {
   const { user } = useAuth();
   const [event, setEvent] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const isOwner = event?.host?._id === user?._id;
 
   const fetchEvent = async () => {
     try {
@@ -56,8 +59,6 @@ export const EventDetails = () => {
         typeof u === "string" ? u === user?._id : u._id?.toString() === user?._id
     );
 
-
-
   return (
     <main className="event-details">
       <h1>{event.title}</h1>
@@ -95,6 +96,34 @@ export const EventDetails = () => {
           ))}
         </div>
       )}
+      {isOwner && (
+            <div style={{ marginTop: "1rem" }}>
+                <button
+                onClick={() => navigate(`/events/edit/${event._id}`)}
+                className="edit-btn"
+                >
+                ✏️ Edit Event
+                </button>
+                <button
+                onClick={async () => {
+                    if (!confirm("Are you sure you want to delete this event?")) return;
+                    try {
+                    await axios.delete(`${API_URL}/events/delete/${event._id}`, { withCredentials: true });
+                    alert("Event deleted!");
+                    navigate("/home");
+                    } catch (err) {
+                    console.error(err);
+                    alert("Failed to delete event");
+                    }
+                }}
+                className="delete-btn"
+                style={{ marginLeft: "10px" }}
+                >
+                🗑️ Delete Event
+                </button>
+            </div>
+            )}
+
     </main>
   );
 };

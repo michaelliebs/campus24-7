@@ -1,7 +1,7 @@
 import "../stylesheets/HomePage.css"
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { EventItem } from "../components/homepage/EventItem";;
+import { EventItem } from "../components/homepage/EventItem";
 import type { EventItemProps } from "../components/homepage/EventItem";
 import type { IEvent } from '../../../server/src/models/Events';
 import Header from "../components/homepage/Header";
@@ -13,22 +13,21 @@ type EventAndHost = IEvent & { name: string };
 
 const HomePage = () => {
   const [events, setEvents] = useState<EventAndHost[]>([]);
+  const [loading, setLoading] = useState(true); // NEW
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
+      setLoading(true);
       try {
         const result = await axios.get<IEvent[]>(`${API_URL}/events`, { withCredentials: true });
-        console.log(result.data[0])
-        // Map each event to include host name
+
         const eventsWithHost: EventAndHost[] = await Promise.all(
           result.data.map(async (event) => {
             try {
-              console.log("Event is:", event)
               const userRes = await axios.get(`${API_URL}/users/${event.host._id}`, { withCredentials: true });
-              console.log("userres:", userRes)
-              return { ...event, name: userRes.data.user.name }; // EventAndHost
+              return { ...event, name: userRes.data.user.name };
             } catch (err) {
               console.error(err);
               return { ...event, name: "Unknown" };
@@ -39,6 +38,8 @@ const HomePage = () => {
         setEvents(eventsWithHost);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -60,11 +61,9 @@ const HomePage = () => {
       normalizedSelectedTags.length === 0
         ? true
         : Array.isArray(e.tags) &&
-        normalizedSelectedTags.every((selectedTag) =>
-          e.tags!.some(
-            (eventTag) => eventTag.toLowerCase() === selectedTag
-          )
-        );
+          normalizedSelectedTags.every((selectedTag) =>
+            e.tags!.some((eventTag) => eventTag.toLowerCase() === selectedTag)
+          );
 
     return matchesText && matchesTags;
   });
@@ -89,11 +88,22 @@ const HomePage = () => {
           }
         />
 
-        <section className="container">
-          {filteredEvents.length === 0 ? (
-            <p>No events match your search.</p>
-          ) : (
-            filteredEvents.map((e) => {
+        {loading ? (
+          <div className="loading-container" aria-live="polite">
+            <div className="spinner" style={{ width: 40, height: 40, margin: "1rem auto" }}>
+              <svg viewBox="0 0 50 50" style={{ width: "100%", height: "100%" }}>
+                <circle cx="25" cy="25" r="20" fill="none" stroke="#ccc" strokeWidth="4" />
+                <path d="M45 25a20 20 0 00-7-15" fill="none" stroke="#333" strokeWidth="4" strokeLinecap="round">
+                  <animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite" />
+                </path>
+              </svg>
+            </div>
+          </div>
+        ) : filteredEvents.length === 0 ? (
+          <p style={{ margin: "2rem", textAlign: "center" }}>No events match your search.</p>
+        ) : (
+          <section className="container">
+            {filteredEvents.map((e) => {
               const props: EventItemProps = {
                 title: e.title,
                 description: e.description,
@@ -108,10 +118,10 @@ const HomePage = () => {
                 posted_by_id: e.host._id,
                 event_id: e._id
               };
-              return <EventItem {...props} />
-            })
-          )}
-        </section>
+              return <EventItem key={e._id} {...props} />;
+            })}
+          </section>
+        )}
       </main>
     </>
   );
