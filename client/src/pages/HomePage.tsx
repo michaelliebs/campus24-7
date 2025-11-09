@@ -14,6 +14,7 @@ type EventAndHost = IEvent & { name: string };
 const HomePage = () => {
   const [events, setEvents] = useState<EventAndHost[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -46,14 +47,26 @@ const HomePage = () => {
 
   const filteredEvents = events.filter((e) => {
     const term = searchTerm.trim().toLowerCase();
-    if (!term) return true;
+    const normalizedSelectedTags = selectedTags.map((t) => t.toLowerCase());
 
-    return (
+    const matchesText =
+      !term ||
       e.title.toLowerCase().includes(term) ||
       e.description.toLowerCase().includes(term) ||
       e.location.toLowerCase().includes(term) ||
-      e.name.toLowerCase().includes(term)
-    );
+      e.name.toLowerCase().includes(term);
+
+    const matchesTags =
+      normalizedSelectedTags.length === 0
+        ? true
+        : Array.isArray(e.tags) &&
+        normalizedSelectedTags.every((selectedTag) =>
+          e.tags!.some(
+            (eventTag) => eventTag.toLowerCase() === selectedTag
+          )
+        );
+
+    return matchesText && matchesTags;
   });
 
   return (
@@ -64,32 +77,42 @@ const HomePage = () => {
       />
 
       <main id="home-page">
-        <Filter />
+        <Filter
+          selectedTags={selectedTags}
+          onAddTag={(tag) =>
+            setSelectedTags((prev) =>
+              prev.includes(tag) ? prev : [...prev, tag]
+            )
+          }
+          onRemoveTag={(tag) =>
+            setSelectedTags((prev) => prev.filter((t) => t !== tag))
+          }
+        />
 
-      <section className="container">
+        <section className="container">
           {filteredEvents.length === 0 ? (
             <p>No events match your search.</p>
           ) : (
             filteredEvents.map((e) => {
-          const props: EventItemProps = {
-            title: e.title,
-            description: e.description,
-            date: `${e.date}`.split('T')[0],
-            time: e.time,
-            location: e.location,
-            posted_by: e.name,
-            num_attending: e.attendees.length,
-            num_interested: e.interested.length,
-            num_comments: e.comments.length,
-            tags: e.tags,
-            posted_by_id: e.host._id,
-            event_id: e._id
-          };
-          return <EventItem {...props} />
-        })
-      )}
-      </section>
-    </main>
+              const props: EventItemProps = {
+                title: e.title,
+                description: e.description,
+                date: `${e.date}`.split('T')[0],
+                time: e.time,
+                location: e.location,
+                posted_by: e.name,
+                num_attending: e.attendees.length,
+                num_interested: e.interested.length,
+                num_comments: e.comments.length,
+                tags: e.tags,
+                posted_by_id: e.host._id,
+                event_id: e._id
+              };
+              return <EventItem {...props} />
+            })
+          )}
+        </section>
+      </main>
     </>
   );
 };
