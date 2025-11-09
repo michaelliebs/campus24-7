@@ -1,11 +1,16 @@
 // import React, { useState } from "react";
-import { Link, useNavigate } from 'react-router-dom'; 
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { FaUserCircle } from "react-icons/fa";
 import '../../stylesheets/Header.css';
 
-export default function Header() {
+type HeaderProps = {
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+};
+
+export default function Header({ searchTerm, onSearchChange }: HeaderProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -20,7 +25,7 @@ export default function Header() {
   };
 
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
-  
+
   return (
     <header id="site-header">
       <section className="links">
@@ -29,19 +34,23 @@ export default function Header() {
         </div>
       </section>
 
-      <search id='search-bar'>
-        <input placeholder="Search Events" />
-      </search>
+      <div id='search-bar'>
+        <input
+          placeholder="Search Events..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+        />
+      </div>
 
       {user && (<>
-        <Link to="/create-event" style={{textDecoration: "none"}}>
+        <Link to="/create-event" style={{ textDecoration: "none" }}>
           <button className='create-event-btn'>
-            <span style={{fontSize: "22px", marginRight: "10px"}}>+</span>
+            <span style={{ fontSize: "22px", marginRight: "10px" }}>+</span>
             Create event
           </button>
         </Link>
 
-       <div className="profile-menu">
+        <div className="profile-menu">
           {/* Profile icon */}
           <div className="profile-icon" onClick={toggleDropdown}>
             {user.profilePicture ? (
