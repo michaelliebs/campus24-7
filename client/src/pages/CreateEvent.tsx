@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import '../stylesheets/CreateEvent.css';
+import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 type CreateEventFormData = {
   title: string,
@@ -19,8 +23,9 @@ const CreateEvent = () => {
     location: "",
     tags: ""
   })
+  const navigate = useNavigate();
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     
     setFormData(prev => ({
@@ -31,7 +36,7 @@ const CreateEvent = () => {
 
   const MAX_TAGS = 5;
   const MAX_TAG_LEN = 25;
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     let errors: string[] = [];
     
@@ -56,8 +61,16 @@ const CreateEvent = () => {
     if(errors.length > 0) {
       alert("One or more fields are not properly filled out!:\n"+errors[0]);
     } else {
-      // TODO: 
-      alert("Create")
+      axios.post(`${API_URL}/events/create`, formData, {
+        withCredentials: true,
+      })
+        .then(res => {
+          console.log(res);
+          navigate("/home");
+        })
+        .catch(err => {
+          console.error(err);
+        });
     }
 
   }
@@ -74,8 +87,9 @@ const CreateEvent = () => {
 
       {/* description: string; */}
       <label> Description of event:<br/>
-        <textarea name='description' id='description' type='text' onChange={handleChange}
-          required pattern="^(?=.*\S).{1,1999}$"
+        <textarea name='description' id='description' onChange={handleChange}
+          required 
+          // pattern="^(?=.*\S).{1,1999}$"
         />
       </label><br/>
 

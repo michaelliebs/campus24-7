@@ -48,7 +48,6 @@ const EventItem = ({
   num_comments,
   tags
 }: EventItemProps) => {
-  console.log(date,time, location)
   return (<div className="event">
     <div className="title-author" style={{display: "flex"}}>
       <h2 style={{display: "inline", margin: 0}}>{title}</h2>
